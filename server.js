@@ -124,7 +124,7 @@ async function askUserForAction() {
             break;
 
         case "REMOVE_DEPARTMENT":
-            removeDepartment();
+            deleteDepartment();
             break;
 
         case "VIEW_ROLES":
@@ -274,3 +274,163 @@ async function updateEmployeeRole() {
 
     askUserForAction();
 }
+// Update Employees by MANAGER
+
+async function updateEmployeeManager() {
+    const employees = await db.findAllEmployees();
+
+    const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
+        name: `${first_name} ${last_name}`,
+        value: id
+    }));
+
+    const { employeeId } = await prompt([
+        {
+            type: "list",
+            name: "employeeId",
+            message: "Which manager do you want to update?",
+            choices: employeeChoices
+        }
+    ]);
+
+    const managers = await db.findAllPossibleManagers(employeeId);
+
+    const managerChoices = managers.map(({ id, first_name, last_name }) => ({
+        name: `${first_name} ${last_name}`,
+        value: id
+    }));
+
+    const { managerId } = await prompt([
+        {
+            type: "list",
+            name: "managerId",
+            message:
+                "Which employee would you like to change their Manager?",
+            choices: managerChoices
+        }
+    ]);
+
+    await db.updateEmployeeManager(employeeId, managerId);
+
+    console.log("Updated employee's manager");
+
+    askUserForAction();
+}
+// Displaying company ROLES
+async function viewRoles() {
+    const roles = await db.findAllRoles();
+
+    console.log("\n");
+    console.table(roles);
+
+    askUserForAction();
+}
+// Adding ROLE
+async function addRole() {
+    const departments = await db.findAllDepartments();
+
+    const departmentChoices = departments.map(({ id, name }) => ({
+        name: name,
+        value: id
+    }));
+
+    const role = await prompt([
+        {
+            name: "title",
+            message: "What Role would like to add?"
+        },
+        {
+            name: "salary",
+            message: "Define the Salary for this role?"
+        },
+        {
+            type: "list",
+            name: "department_id",
+            message: "Please add the department to this Role?",
+            choices: departmentChoices
+        }
+    ]);
+
+    await db.createRole(role);
+
+    console.log(`This ${role.title} has been added to the database`);
+
+    askUserForAction();
+}
+
+// Delete Roles
+async function deleteRole() {
+    const roles = await db.findAllRoles();
+
+    const roleChoices = roles.map(({ id, title }) => ({
+        name: title,
+        value: id
+    }));
+
+    const { roleId } = await prompt([
+        {
+            type: "list",
+            name: "roleId",
+            message:
+                "Which would you like to delete? (FYI: This will also delete that employee)",
+            choices: roleChoices
+        }
+    ]);
+
+    await db.deleteRole(roleId);
+
+    console.log("Role has been deleted");
+
+    askUserForAction();
+}
+
+// Display DEPATMENT
+async function viewDepartments() {
+    const departments = await db.findAllDepartments();
+
+    console.log("\n");
+    console.table(departments);
+
+    askUserForAction();
+}
+
+// Adding DEPARTMENT
+async function addDepartment() {
+    const department = await prompt([
+        {
+            name: "name",
+            message: "Pleas provide the name of the Department that you want to add?"
+        }
+    ]);
+
+    await db.createDepartment(department);
+
+    console.log(`Department has been added ${department.name} to the database`);
+
+    askUserForAction();
+}
+// Delete Department
+async function deleteDepartment() {
+    const departments = await db.findAllDepartments();
+
+    const departmentChoices = departments.map(({ id, name }) => ({
+        name: name,
+        value: id
+    }));
+
+    const { departmentId } = await prompt({
+        type: "list",
+        name: "departmentId",
+        message:
+            "Which department would you like to remove? (FYI: This will also delete employees and roles assigned to this Department!)",
+        choices: departmentChoices
+    });
+
+    await db.deleteDepartment(departmentId);
+
+    console.log(`Removed department from the database`);
+
+    askUserForAction();
+}
+
+
