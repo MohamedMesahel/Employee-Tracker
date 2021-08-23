@@ -433,4 +433,61 @@ async function deleteDepartment() {
     askUserForAction();
 }
 
+// Adding extra Employees
+async function addEmployee() {
+    const roles = await db.findAllRoles();
+    const employees = await db.findAllEmployees();
 
+    const employee = await prompt([
+        {
+            name: "first_name",
+            message: "Please provied the First Name of the Employee?"
+        },
+        {
+            name: "last_name",
+            message: "Please provied the Last Name of the Employee?"
+        }
+    ]);
+
+    const roleChoices = roles.map(({ id, title }) => ({
+        name: title,
+        value: id
+    }));
+
+    const { roleId } = await prompt({
+        type: "list",
+        name: "roleId",
+        message: "What is the employee's role?",
+        choices: roleChoices
+    });
+
+    employee.role_id = roleId;
+
+    const managerChoices = employees.map(({ id, first_name, last_name }) => ({
+        name: `${first_name} ${last_name}`,
+        value: id
+    }));
+    managerChoices.unshift({ name: "None", value: null });
+
+    const { managerId } = await prompt({
+        type: "list",
+        name: "managerId",
+        message: "Please porvide the name of employee's Manager?",
+        choices: managerChoices
+    });
+
+    employee.manager_id = managerId;
+
+    await db.createEmployee(employee);
+
+    console.log(
+        `Employee ${employee.first_name} ${employee.last_name} has been added to the database`
+    );
+
+    askUserForAction();
+}
+
+function quit() {
+    console.log("Auf WiederSehen!");
+    process.exit();
+}
