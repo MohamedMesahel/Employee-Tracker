@@ -20,3 +20,9 @@ VALUES
 ("Ismail", "Khan", 2, 3), ("Ahmed", "Abid", 1, 1),
 ("Mark", "Hamill", 4, NULL), ("Tom", "Riddle", 1, NULL),
 ("Darth", "Vader", 3, NULL), ("Tony", "Stank", 2, 2),
+
+-- SELECT department_id "Department Code", role_id
+-- COUNT(*) "No of Employees",
+-- SUM(salary) "Total Salary"
+-- FROM employees
+-- GROUP BY department_id, role_id
