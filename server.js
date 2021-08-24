@@ -1,5 +1,6 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
+const artFiglet = require('figlet');
 
 
 const db = mysql.createConnection(
@@ -15,11 +16,24 @@ const db = mysql.createConnection(
 );
 
 require("console.table");
-
 init();
 
+function init() {
+    artFiglet('Welcome to Employee Tracker', function (err, data) {
+        if (err) {
+            console.log('Something went wrong...');
+            console.dir(err);
+            return;
+        }
+        console.log(data)
+    });
+
+    askUserForAction();
+
+}
+
 async function askUserForAction() {
-    const { choice } = await prompt([
+    const { choice } = await inquirer.prompt([
         {
             type: "list",
             name: "choice",
