@@ -8,18 +8,26 @@ VALUES (1, "Operations"),
 -- Seeding Data into ROLE TABLE
 INSERT INTO role (id, title, salary, department_id)
 VALUES 
-(1, "Operations Manager", 50000, 1), (2, "Operations Supervisor", 40000, 1),
-(3, "Human Resources Manager", 45000, 2), (4, "Human Resources Supervisor", 40000, 2),
-(5, "Training Manager", 40000, 3), (6, "Training Supervisor", 35000, 3),
-(7, "Sales Manager", 60000, 4), (8, "Sales Supervisor", 50000, 4);
+(1, "Operations Manager", 50000, 1), 
+(2, "Operations Supervisor", 40000, 2),
+(3, "Human Resources Manager", 45000, 3), 
+(4, "Human Resources Supervisor", 40000, 4),
+(5, "Training Manager", 40000, 5), 
+(6, "Training Supervisor", 35000, 6),
+(7, "Sales Manager", 60000, 7), 
+(8, "Sales Supervisor", 50000, 8);
 
 -- Seeding Data into EMPLOYEE TABLE
 INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
 VALUES
-(1, "Sam", "Smith", 1, 2), (4, "Hanz", "Zimmer", 4, NULL), 
-(3, "Ismail", "Khan", 2, 3), (5, "Ahmed", "Abid", 3, 1),
-(2, "Mark", "Hamill", 3, NULL), (8, "Tom", "Riddle", 2, NULL),
-(7, "Darth", "Vader", 4, NULL), (6, "Tony", "Stank", 1, 2);
+(1, "Sam", "Smith", 1, 2), 
+(4, "Hanz", "Zimmer", 4, NULL), 
+(3, "Ismail", "Khan", 3, 3), 
+(5, "Ahmed", "Abid", 6, 1),
+(2, "Mark", "Hamill", 7, NULL), 
+(8, "Tom", "Riddle", 8, NULL),
+(7, "Darth", "Vader", 5, NULL), 
+(6, "Tony", "Stank", 2, 2);
 
 -- SELECT department_id "Department Code", role_id
 -- COUNT(*) "No of Employees",
