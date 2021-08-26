@@ -20,13 +20,13 @@ VALUES
 -- Seeding Data into EMPLOYEE TABLE
 INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
 VALUES
-(1, "Sam", "Smith", 2, NULL), 
+(1, "Sam", "Smith", 2, 1), 
 (4, "Hanz", "Zimmer", 4, NULL), 
-(3, "Ismail", "Khan", 6, NULL), 
+(3, "Ismail", "Khan", 6, 1), 
 (5, "Ahmed", "Abid", 8, NULL),
 (2, "Mark", "Hamill", 4, NULL), 
-(8, "Tom", "Riddle", 8, NULL),
-(7, "Darth", "Vader", 2, NULL), 
+(8, "Tom", "Riddle", 8, 3),
+(7, "Darth", "Vader", 2, 3), 
 (6, "Tony", "Stank", 6, NULL);
 
 -- SELECT department_id "Department Code", role_id
