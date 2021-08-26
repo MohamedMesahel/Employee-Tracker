@@ -16,8 +16,6 @@ const db = mysql.createConnection(
 );
 
 require("console.table");
-init();
-
 function init() {
     artFiglet('Welcome to Employee Tracker', function (err, data) {
         if (err) {
@@ -33,153 +31,198 @@ function init() {
 }
 // Using inquirer and start using db.querry methoad 
 
- function askUserForAction() {
+function askUserForAction() {
     inquirer.prompt([
         {
             type: "list",
             name: "choice",
             message: "What would you like to do?",
             choices: [
-                {
-                    name: "View All Employees",
-                    value: "VIEW_EMPLOYEES"
-                },
-                {
-                    name: "View All Employees By Department",
-                    value: "VIEW_EMPLOYEES_BY_DEPARTMENT"
-                },
-                {
-                    name: "View All Employees By Manager",
-                    value: "VIEW_EMPLOYEES_BY_MANAGER"
-                },
-                {
-                    name: "Add Employee",
-                    value: "ADD_EMPLOYEE"
-                },
-                {
-                    name: "Remove Employee",
-                    value: "REMOVE_EMPLOYEE"
-                },
-                {
-                    name: "Update Employee Role",
-                    value: "UPDATE_EMPLOYEE_ROLE"
-                },
-                {
-                    name: "Update Employee Manager",
-                    value: "UPDATE_EMPLOYEE_MANAGER"
-                },
-                {
-                    name: "View All Roles",
-                    value: "VIEW_ROLES"
-                },
-                {
-                    name: "Add Role",
-                    value: "ADD_ROLE"
-                },
-                {
-                    name: "Remove Role",
-                    value: "REMOVE_ROLE"
-                },
-                {
-                    name: "View All Departments",
-                    value: "VIEW_DEPARTMENTS"
-                },
-                {
-                    name: "Add Department",
-                    value: "ADD_DEPARTMENT"
-                },
-                {
-                    name: "Remove Department",
-                    value: "REMOVE_DEPARTMENT"
-                },
-                {
-                    name: "Quit",
-                    value: "QUIT"
-                }
+                "View Depratments",
+                "View All Roles",
+                // {
+                //     name: "View Depratments",
+                //     value: "VIEW_DEPARTMENTS"
+                // }
+                // "View All Employees",
+                // 
+                // {
+                //     
+                // },
+                // {
+                //     name: 
+                //     value: "VIEW_EMPLOYEES"
+                // },
+                // {
+                //     name: "View All Employees By Department",
+                //     value: "VIEW_EMPLOYEES_BY_DEPARTMENT"
+                // },
+                // {
+                //     name: "View All Employees By Manager",
+                //     value: "VIEW_EMPLOYEES_BY_MANAGER"
+                // },
+                // {
+                //     name: "Add Employee",
+                //     value: "ADD_EMPLOYEE"
+                // },
+                // {
+                //     name: "Remove Employee",
+                //     value: "REMOVE_EMPLOYEE"
+                // },
+                // {
+                //     name: "Update Employee Role",
+                //     value: "UPDATE_EMPLOYEE_ROLE"
+                // },
+                // {
+                //     name: "Update Employee Manager",
+                //     value: "UPDATE_EMPLOYEE_MANAGER"
+                // },
+                // {
+                //     name: 
+                //     value: "VIEW_ROLES"
+                // },
+                // {
+                //     name: "Add Role",
+                //     value: "ADD_ROLE"
+                // },
+                // {
+                //     name: "Remove Role",
+                //     value: "REMOVE_ROLE"
+                // },
+                // {
+                //     name: "View All Departments",
+                //     value: "VIEW_DEPARTMENTS"
+                // },
+                // {
+                //     name: "Add Department",
+                //     value: "ADD_DEPARTMENT"
+                // },
+                // {
+                //     name: "Remove Department",
+                //     value: "REMOVE_DEPARTMENT"
+                // },
+                // {
+                //     name: "Quit",
+                //     value: "QUIT"
+                // }
             ]
         }
-    ]).then(function ({choice}){
-        // Switch to correct action
-        switch (choice) {
-            case "VIEW_EMPLOYEES":
-                viewEmployees();
-                break;
+    ]).then((choice) => {
+        switch (choice.choice) {
 
-            case "VIEW_EMPLOYEES_BY_DEPARTMENT":
-                viewEmployeesByDepartment();
-                break;
-
-            case "VIEW_EMPLOYEES_BY_MANAGER":
-                viewEmployeesByManager();
-                break;
-
-            case "ADD_EMPLOYEE":
-                addEmployee();
-                break;
-
-            case "REMOVE_EMPLOYEE":
-                deleteEmployee();
-                break;
-
-            case "UPDATE_EMPLOYEE_ROLE":
-                updateEmployeeRole();
-                break;
-
-            case "UPDATE_EMPLOYEE_MANAGER":
-                updateEmployeeManager();
-                break;
-
-            case "VIEW_DEPARTMENTS":
+            case "View Depratments":
                 viewDepartments();
                 break;
 
-            case "ADD_DEPARTMENT":
-                addDepartment();
-                break;
-
-            case "REMOVE_DEPARTMENT":
-                deleteDepartment();
-                break;
-
-            case "VIEW_ROLES":
+            case "View All Roles":
                 viewRoles();
                 break;
 
-            case "ADD_ROLE":
-                addRole();
-                break;
+            // case "VIEW_EMPLOYEES":
+            //     viewEmployees();
+            //     break;
 
-            case "REMOVE_ROLE":
-                removeRole();
-                break;
+            // case "VIEW_EMPLOYEES_BY_DEPARTMENT":
+            //     viewEmployeesByDepartment();
+            //     break;
 
-            default:
-                return quit();
+            // case "VIEW_EMPLOYEES_BY_MANAGER":
+            //     viewEmployeesByManager();
+            //     break;
+
+            // case "ADD_EMPLOYEE":
+            //     addEmployee();
+            //     break;
+
+            // case "REMOVE_EMPLOYEE":
+            //     deleteEmployee();
+            //     break;
+
+            // case "UPDATE_EMPLOYEE_ROLE":
+            //     updateEmployeeRole();
+            //     break;
+
+            // case "UPDATE_EMPLOYEE_MANAGER":
+            //     updateEmployeeManager();
+            //     break;
+
+            // case "ADD_DEPARTMENT":
+            //     addDepartment();
+            //     break;
+
+            // case "REMOVE_DEPARTMENT":
+            //     deleteDepartment();
+            //     break;
+
+            // case "ADD_ROLE":
+            //     addRole();
+            //     break;
+
+            // case "REMOVE_ROLE":
+            //     removeRole();
+            //     break;
+
+            // default:
+            //     return quit();
         }
-    })
+    });
 
 };
 
-// View all EMLOYEES
-db.query("SELECT * FROM employee", function viewEmployees(err,res) {
-    if (err) {
-        console.log(err);
-    } else {
-        console.log(`EMPLOYEE:`);
-        console.table(res);
-        askUserForAction();
-    };
-});
+// Display DEPATMENT
+let viewDepartments = () => {
+    db.query("SELECT * FROM department", function (err, res) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.table(res);
+            // res.forEach((department) => {
+            //     console.log(`ID: ${department.department_id} | Name: ${department.names}`);
+            // });
+        };
 
-db.query("SELECT * FROM department", function viewEmployeesByDepartment(err, res) {
-    if (err) {
-        console.log(err);
-    } else {
-        console.log(`DEPARTMENT:`);
-        console.table(res);
         askUserForAction();
-    };
-});
+    });
+}
+// // // View Company ROLES
+let viewRoles = () => {
+    db.query("SELECT * FROM role", function (err, res) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log("\n");
+            console.table(res);
+        };
+
+
+        askUserForAction();
+    });
+}
+
+// // View all EMLOYEES
+// let viewEmployees = () => {
+//     db.query("SELECT * FROM employee", function (err, res) {
+//         if (err) {
+//             console.log(err);
+//         } else {
+//             console.log(`EMPLOYEE:`);
+//             console.table(res);
+//             askUserForAction();
+//         };
+//     });
+// }
+
+init();
+
+// db.query("SELECT * FROM department", function viewEmployeesByDepartment(err, res) {
+//     if (err) {
+//         console.log(err);
+//     } else {
+//         console.log(`DEPARTMENT:`);
+//         console.table(res);
+//         askUserForAction();
+//     };
+// });
 
 // // View employees by DEPARTMENT
 // function viewEmployeesByDepartment() {
@@ -343,15 +386,7 @@ db.query("SELECT * FROM department", function viewEmployeesByDepartment(err, res
 
 //     askUserForAction();
 // }
-// // Displaying company ROLES
-// async function viewRoles() {
-//     const roles = await db.findAllRoles();
 
-//     console.log("\n");
-//     console.table(roles);
-
-//     askUserForAction();
-// }
 // // Adding ROLE
 // async function addRole() {
 //     const departments = await db.findAllDepartments();
@@ -411,15 +446,7 @@ db.query("SELECT * FROM department", function viewEmployeesByDepartment(err, res
 //     askUserForAction();
 // }
 
-// // Display DEPATMENT
-// async function viewDepartments() {
-//     const departments = await db.findAllDepartments();
 
-//     console.log("\n");
-//     console.table(departments);
-
-//     askUserForAction();
-// }
 
 // // Adding DEPARTMENT
 // async function addDepartment() {
