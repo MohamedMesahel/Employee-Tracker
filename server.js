@@ -40,6 +40,11 @@ function askUserForAction() {
             choices: [
                 "View Depratments",
                 "View All Roles",
+                "View Employees",
+                "Add a Department",
+                "Add a Role",
+                "Add an Employee",
+                "Update an Employee Role",
                 // {
                 //     name: "View Depratments",
                 //     value: "VIEW_DEPARTMENTS"
@@ -118,9 +123,21 @@ function askUserForAction() {
                 viewRoles();
                 break;
 
-            // case "VIEW_EMPLOYEES":
-            //     viewEmployees();
-            //     break;
+            case "View Employees":
+                viewEmployees();
+                break;
+            case "Add a Department":
+                addDepartment();
+                break;
+            case "Add a Role":
+                addRole();
+                break;
+            case "Add an Employee":
+                addEmployee();
+                break;
+            case "Update an Employee Role":
+                updateEmployeeRole();
+                break;
 
             // case "VIEW_EMPLOYEES_BY_DEPARTMENT":
             //     viewEmployeesByDepartment();
@@ -130,33 +147,25 @@ function askUserForAction() {
             //     viewEmployeesByManager();
             //     break;
 
-            // case "ADD_EMPLOYEE":
-            //     addEmployee();
-            //     break;
+
 
             // case "REMOVE_EMPLOYEE":
             //     deleteEmployee();
             //     break;
 
-            // case "UPDATE_EMPLOYEE_ROLE":
-            //     updateEmployeeRole();
-            //     break;
+
 
             // case "UPDATE_EMPLOYEE_MANAGER":
             //     updateEmployeeManager();
             //     break;
 
-            // case "ADD_DEPARTMENT":
-            //     addDepartment();
-            //     break;
+
 
             // case "REMOVE_DEPARTMENT":
             //     deleteDepartment();
             //     break;
 
-            // case "ADD_ROLE":
-            //     addRole();
-            //     break;
+
 
             // case "REMOVE_ROLE":
             //     removeRole();
@@ -193,23 +202,120 @@ let viewRoles = () => {
             console.log("\n");
             console.table(res);
         };
-
-
         askUserForAction();
     });
 }
 
-// // View all EMLOYEES
-// let viewEmployees = () => {
-//     db.query("SELECT * FROM employee", function (err, res) {
-//         if (err) {
-//             console.log(err);
-//         } else {
-//             console.log(`EMPLOYEE:`);
-//             console.table(res);
-//             askUserForAction();
-//         };
-//     });
+// View all EMLOYEES
+let viewEmployees = () => {
+    db.query("SELECT * FROM employee", function (err, res) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(`EMPLOYEE:`);
+            console.table(res);
+        };
+        askUserForAction();
+    });
+}
+
+// // Adding DEPARTMENT
+let addDepartment = () => {
+    inquirer
+        .prompt({
+            type: "input",
+            name: "name",
+            message: "please provide the Department name?",
+            validate: (value) => { if (value) { return true } else { return 'I need a value to continue' } }
+
+        })
+        .then((input) => {
+            db.query(`
+                INSERT INTO department (name)
+                VALUES (?)
+                `, input.name, function (err, res) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log(`DEPARTMENT:`);
+                    console.table(res);
+                };
+            });
+            askUserForAction();
+        });
+
+};
+let addRole = () => {
+    db.query(`SELECT * FROM department`,
+        function (err, res) {
+            if (err) {
+                console.log(err);
+            }
+            inquirer
+                .prompt([
+                    {
+                        type: "input",
+                        name: "title",
+                        message: "Please provide Title",
+                        validate: (value) => { if (value) { return true } else { return 'I need a value to continue' } }
+
+                    },
+                    {
+                        type: "number",
+                        name: "salary",
+                        message: "Please provide Role Salary",
+                        validate: (value) => { if (value) { return true } else { return 'I need a value to continue' } }
+
+                    },
+                    {
+                        type: "rawlist",
+                        name: "department-name",
+                        message: "Please select which Department",
+                        choices: () => {
+                            const list = [];
+                            for (let i = 0; i < res.length; i++) {
+                                list.push(res[i].name);
+                            }
+                            return list;
+                        }
+                    }
+                ])
+                .then((answer) => {
+                    db.query(`
+                        INSERT INTO role (title, salary, department_id)
+                        VALUES(?,?,?)
+                        `, [answer.title, answer.salary, answer.department],
+                        function (err, res) {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                // console.log(`ROLE:`);
+
+                                console.log('added Role: ' + JSON.stringify(answer));
+                                console.table(res);
+
+                            }
+                        });
+                    askUserForAction();
+                })
+        });
+}
+
+
+// });
+
+//     const department = await prompt([
+//         {
+//             name: "name",
+//             message: "Pleas provide the name of the Department that you want to add?"
+//         }
+//     ]);
+
+//     await db.createDepartment(department);
+
+//     console.log(`Department has been added ${department.name} to the database`);
+
+//     askUserForAction();
 // }
 
 init();
@@ -448,21 +554,7 @@ init();
 
 
 
-// // Adding DEPARTMENT
-// async function addDepartment() {
-//     const department = await prompt([
-//         {
-//             name: "name",
-//             message: "Pleas provide the name of the Department that you want to add?"
-//         }
-//     ]);
 
-//     await db.createDepartment(department);
-
-//     console.log(`Department has been added ${department.name} to the database`);
-
-//     askUserForAction();
-// }
 // // Delete Department
 // async function deleteDepartment() {
 //     const departments = await db.findAllDepartments();
