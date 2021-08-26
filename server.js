@@ -46,71 +46,6 @@ function askUserForAction() {
                 "Add an Employee",
                 "Update an Employee Role",
                 "Close the Process",
-                // {
-                //     name: "View Depratments",
-                //     value: "VIEW_DEPARTMENTS"
-                // }
-                // "View All Employees",
-                // 
-                // {
-                //     
-                // },
-                // {
-                //     name: 
-                //     value: "VIEW_EMPLOYEES"
-                // },
-                // {
-                //     name: "View All Employees By Department",
-                //     value: "VIEW_EMPLOYEES_BY_DEPARTMENT"
-                // },
-                // {
-                //     name: "View All Employees By Manager",
-                //     value: "VIEW_EMPLOYEES_BY_MANAGER"
-                // },
-                // {
-                //     name: "Add Employee",
-                //     value: "ADD_EMPLOYEE"
-                // },
-                // {
-                //     name: "Remove Employee",
-                //     value: "REMOVE_EMPLOYEE"
-                // },
-                // {
-                //     name: "Update Employee Role",
-                //     value: "UPDATE_EMPLOYEE_ROLE"
-                // },
-                // {
-                //     name: "Update Employee Manager",
-                //     value: "UPDATE_EMPLOYEE_MANAGER"
-                // },
-                // {
-                //     name: 
-                //     value: "VIEW_ROLES"
-                // },
-                // {
-                //     name: "Add Role",
-                //     value: "ADD_ROLE"
-                // },
-                // {
-                //     name: "Remove Role",
-                //     value: "REMOVE_ROLE"
-                // },
-                // {
-                //     name: "View All Departments",
-                //     value: "VIEW_DEPARTMENTS"
-                // },
-                // {
-                //     name: "Add Department",
-                //     value: "ADD_DEPARTMENT"
-                // },
-                // {
-                //     name: "Remove Department",
-                //     value: "REMOVE_DEPARTMENT"
-                // },
-                // {
-                //     name: "Quit",
-                //     value: "QUIT"
-                // }
             ]
         }
     ]).then((choice) => {
@@ -144,39 +79,6 @@ function askUserForAction() {
                 quit();
                 break;
 
-            // case "VIEW_EMPLOYEES_BY_DEPARTMENT":
-            //     viewEmployeesByDepartment();
-            //     break;
-
-            // case "VIEW_EMPLOYEES_BY_MANAGER":
-            //     viewEmployeesByManager();
-            //     break;
-
-
-
-            // case "REMOVE_EMPLOYEE":
-            //     deleteEmployee();
-            //     break;
-
-
-
-            // case "UPDATE_EMPLOYEE_MANAGER":
-            //     updateEmployeeManager();
-            //     break;
-
-
-
-            // case "REMOVE_DEPARTMENT":
-            //     deleteDepartment();
-            //     break;
-
-
-
-            // case "REMOVE_ROLE":
-            //     removeRole();
-            //     break;
-
-            
         }
     });
 
@@ -197,7 +99,7 @@ let viewDepartments = () => {
         askUserForAction();
     });
 }
-// // // View Company ROLES
+// View Company ROLES
 let viewRoles = () => {
     db.query("SELECT * FROM role", function (err, res) {
         if (err) {
@@ -396,7 +298,7 @@ let addEmployee = () => {
             });
         });
     });
-    
+
 }
 let roleArr = [];
 function selectRole() {
@@ -414,47 +316,47 @@ function selectRole() {
 let updateEmployeeRole = () => {
     db.query("SELECT employee.last_name, role.title FROM employee JOIN role ON employee.role_id = role.id;", function (err, res) {
         if (err) {
-                    console.log(err);
-                }
+            console.log(err);
+        }
         console.log(res)
         inquirer
-        .prompt([
-            {
-                name: "lastName",
-                type: "list",
-                choices: function () {
-                    let lastName = [];
-                    for (let i = 0; i < res.length; i++) {
-                        lastName.push(res[i].last_name);
-                    }
-                    return lastName;
-                },
-                message: "What is the Employee's last name? ",
-            },
-            {
-                name: "role",
-                type: "list",
-                message: "Please provide employee new title? ",
-                choices: selectRole()
-            },
-        ]).then(function (val) {
-            let roleId = selectRole().indexOf(val.role) + 1
-            db.query(`UPDATE employee SET role_id = ? WHERE id = ?`,
+            .prompt([
                 {
-                    last_name: val.lastName
-
+                    name: "lastName",
+                    type: "list",
+                    choices: function () {
+                        let lastName = [];
+                        for (let i = 0; i < res.length; i++) {
+                            lastName.push(res[i].last_name);
+                        }
+                        return lastName;
+                    },
+                    message: "What is the Employee's last name? ",
                 },
                 {
-                    role_id: roleId
-
+                    name: "role",
+                    type: "list",
+                    message: "Please provide employee new title? ",
+                    choices: selectRole()
                 },
-                function (err, res) {
-                    if (err) throw err
-                    console.table(res);
-                    askUserForAction();
-                })
+            ]).then(function (val) {
+                let roleId = selectRole().indexOf(val.role) + 1
+                db.query(`UPDATE employee SET role_id = ? WHERE id = ?`,
+                    {
+                        last_name: val.lastName
 
-        });
+                    },
+                    {
+                        role_id: roleId
+
+                    },
+                    function (err, res) {
+                        if (err) throw err
+                        console.table(res);
+                        askUserForAction();
+                    })
+
+            });
     });
 
 }
