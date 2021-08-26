@@ -268,7 +268,7 @@ let addRole = () => {
 
                     },
                     {
-                        type: "rawlist",
+                        type: "list",
                         name: "department-name",
                         message: "Please select which Department",
                         choices: () => {
@@ -281,10 +281,12 @@ let addRole = () => {
                     }
                 ])
                 .then((answer) => {
+                    // let department_id = findId(answer.department_name, res);
+
                     db.query(`
                         INSERT INTO role (title, salary, department_id)
                         VALUES(?,?,?)
-                        `, [answer.title, answer.salary, answer.department],
+                        `, [answer.title, answer.salary, answer.choices],
                         function (err, res) {
                             if (err) {
                                 console.log(err);
@@ -301,6 +303,184 @@ let addRole = () => {
         });
 }
 
+// // Adding extra Employees
+let addEmployee = () => {
+    db.query("SELECT * FROM role", function (err, res) {
+        if (err) throw err;
+
+        inquirer.prompt([{
+            name: "firstName",
+            type: "input",
+            message: "What is the employee's first name?",
+        },
+        {
+            name: "lastName",
+            type: "input",
+            message: "What is the employee's last name?",
+        },
+        {
+            name: "roleName",
+            type: "list",
+            message: "What role does the employee have?",
+            choices: function () {
+                roleArray = [];
+                res.forEach((res) => {
+                    roleArray.push(res.title);
+                });
+                return roleArray;
+            },
+        },
+        ]).then(function (answer) {
+            console.log(answer);
+            console.table(res);
+            let role = answer.roleName;
+            db.query("SELECT * FROM role", function (err, res) {
+                if (err) throw err;
+                let filteredRole = res.filter(function (res) {
+                    return res.title == role;
+                });
+                let roleId = filteredRole[0].role_id;
+                db.query("SELECT * FROM employee", function (err, res) {
+                    inquirer
+                        .prompt([{
+                            name: "manager",
+                            type: "list",
+                            message: "Who is your manager?",
+                            choices: function () {
+                                managersArray = [];
+                                res.forEach((res) => {
+                                    managersArray.push(res.last_name);
+                                });
+                                return managersArray;
+                            },
+                        },
+                        ]).then(function (managerAnswer) {
+                            let manager = managerAnswer.manager;
+                            db.query("SELECT * FROM employee", function (err, res) {
+                                if (err) throw err;
+                                let filteredManager = res.filter(function (res) {
+                                    return res.last_name == manager;
+                                });
+                                let managerId = filteredManager[0].manager_id;
+                                console.log(managerAnswer);
+                                console.table(res);
+                                var query =
+                                    "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)";
+                                let values = [
+                                    answer.firstName,
+                                    answer.lastName,
+                                    roleId,
+                                    managerId,
+                                ];
+                                console.log(values);
+                                console.table(res);
+                                db.query(query, values, function (err, res, fields) {
+                                    console.log(
+                                        `You have added this employee: ${values[0].toUpperCase()}.`
+                                    );
+                                });
+                                askUserForAction();
+                            });
+                        });
+                });
+            });
+        });
+    });
+    // inquirer
+    //     .prompt([
+    //         {
+    //             type: "input",
+    //             name: "first-name",
+    //             message: "Please provide First Name",
+    //             validate: (value) => { if (value) { return true } else { return 'I need a value to continue' } }
+    //         },
+    //         {
+    //             type: "input",
+    //             name: "last-name",
+    //             message: "Please provide Last Name",
+    //             validate: (value) => { if (value) { return true } else { return 'I need a value to continue' } }
+    //         },
+    //         {
+    //             type: "rawlist",
+    //             name: "role",
+    //             message: "Please select which Role",
+    //             choices: () => {
+    //                 let list = [];
+    //                 for (let i = 0; i < res.length; i++) {
+    //                     list.push(res[i].name);
+    //                 }
+    //                 return list;
+    //             }
+    //         },
+
+    //     ])
+    //     .then((answer) => {
+    //         db.query(`
+    //             INSERT INTO employee (first_name, last_name, role_id, manager_id)
+    //             VALUES (?, ?, ? , ?)
+    //             `, [answer.first_name, answer.last_name, answer.choices, manager_id],
+    //             function (err, res) {
+    //                 if (err) {
+    //                     console.log(err);
+    //                 } else {
+    //                     console.log('added Employee: ' + JSON.stringify(answer));
+    //                     console.table(res);
+    //                 }
+    //                 askUserForAction();
+    //             });
+    //     })
+}
+//     const roles = await db.findAllRoles();
+//     const employees = await db.findAllEmployees();
+
+//     const employee = await prompt([
+//         {
+//             name: "first_name",
+//             message: "Please provied the First Name of the Employee?"
+//         },
+//         {
+//             name: "last_name",
+//             message: "Please provied the Last Name of the Employee?"
+//         }
+//     ]);
+
+//     const roleChoices = roles.map(({ id, title }) => ({
+//         name: title,
+//         value: id
+//     }));
+
+//     const { roleId } = await prompt({
+//         type: "list",
+//         name: "roleId",
+//         message: "What is the employee's role?",
+//         choices: roleChoices
+//     });
+
+//     employee.role_id = roleId;
+
+//     const managerChoices = employees.map(({ id, first_name, last_name }) => ({
+//         name: `${first_name} ${last_name}`,
+//         value: id
+//     }));
+//     managerChoices.unshift({ name: "None", value: null });
+
+//     const { managerId } = await prompt({
+//         type: "list",
+//         name: "managerId",
+//         message: "Please porvide the name of employee's Manager?",
+//         choices: managerChoices
+//     });
+
+//     employee.manager_id = managerId;
+
+//     await db.createEmployee(employee);
+
+//     console.log(
+//         `Employee ${employee.first_name} ${employee.last_name} has been added to the database`
+//     );
+
+//     askUserForAction();
+// }
 
 // });
 
@@ -579,59 +759,7 @@ init();
 //     askUserForAction();
 // }
 
-// // Adding extra Employees
-// async function addEmployee() {
-//     const roles = await db.findAllRoles();
-//     const employees = await db.findAllEmployees();
 
-//     const employee = await prompt([
-//         {
-//             name: "first_name",
-//             message: "Please provied the First Name of the Employee?"
-//         },
-//         {
-//             name: "last_name",
-//             message: "Please provied the Last Name of the Employee?"
-//         }
-//     ]);
-
-//     const roleChoices = roles.map(({ id, title }) => ({
-//         name: title,
-//         value: id
-//     }));
-
-//     const { roleId } = await prompt({
-//         type: "list",
-//         name: "roleId",
-//         message: "What is the employee's role?",
-//         choices: roleChoices
-//     });
-
-//     employee.role_id = roleId;
-
-//     const managerChoices = employees.map(({ id, first_name, last_name }) => ({
-//         name: `${first_name} ${last_name}`,
-//         value: id
-//     }));
-//     managerChoices.unshift({ name: "None", value: null });
-
-//     const { managerId } = await prompt({
-//         type: "list",
-//         name: "managerId",
-//         message: "Please porvide the name of employee's Manager?",
-//         choices: managerChoices
-//     });
-
-//     employee.manager_id = managerId;
-
-//     await db.createEmployee(employee);
-
-//     console.log(
-//         `Employee ${employee.first_name} ${employee.last_name} has been added to the database`
-//     );
-
-//     askUserForAction();
-// }
 
 // function quit() {
 //     console.log("Auf WiederSehen!");
