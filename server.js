@@ -313,6 +313,8 @@ function selectRole() {
     })
     return roleArr;
 }
+
+// Updating Employee Role
 let updateEmployeeRole = () => {
     db.query("SELECT employee.last_name, role.title FROM employee JOIN role ON employee.role_id = role.id;", function (err, res) {
         if (err) {
@@ -360,7 +362,7 @@ let updateEmployeeRole = () => {
     });
 
 }
-
+// Function to Exit the process
 function quit() {
     console.log("Auf WiederSehen!");
     process.exit();

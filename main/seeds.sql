@@ -29,6 +29,7 @@ VALUES
 (7, "Darth", "Vader", 2, 3), 
 (6, "Tony", "Stank", 6, NULL);
 
+-- For Future development
 -- SELECT department_id "Department Code", role_id
 -- COUNT(*) "No of Employees",
 -- SUM(salary) "Total Salary"
