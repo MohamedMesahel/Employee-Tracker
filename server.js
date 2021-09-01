@@ -344,14 +344,14 @@ let updateEmployeeRole = () => {
             ]).then(function (val) {
                 let roleId = selectRole().indexOf(val.role) + 1
                 db.query(`UPDATE employee SET role_id = ? WHERE id = ?`,
-                    {
+                   [ {
                         last_name: val.lastName
 
                     },
                     {
                         role_id: roleId
 
-                    },
+                    }],
                     function (err, res) {
                         if (err) throw err
                         console.table(res);
