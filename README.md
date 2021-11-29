@@ -41,6 +41,7 @@ Developers frequently have to create interfaces that allow non-developers to eas
 &nbsp; &nbsp; &nbsp; &nbsp;
   <img  src="./assets/img/employeetracker2.png" width="45%">
 &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp;
   <img  src="./assets/img/employeetracker3.png" width="45%">
 </p>
 
